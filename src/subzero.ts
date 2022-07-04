@@ -20,50 +20,7 @@ export class SubZero extends PIXI.Sprite {
         window.addEventListener("keyup", (e: KeyboardEvent) => this.onKeyUp(e));
     }
 
-    //keyboard input clickevent check voor WASD-keys
-    private onKeyDown(e: KeyboardEvent): void {
-        switch (e.key.toUpperCase()) {
-            case "F":
-                this.shoot()
-                break
-            case "A":
-                this.xSpeed = -4
-                break
-            case "D":
-                this.xSpeed = 4
-                break
-            case "W":
-                // this.ySpeed = -4
-                break
-            case "S":
-                // this.ySpeed = 4
-                break
-        }
-
-    }
-
-    private onKeyUp(e: KeyboardEvent): void {
-        switch (e.key.toUpperCase()) {
-            case "F":
-                this.shoot()
-                break;
-            case "A":
-            case "D":
-                this.xSpeed = 0
-                break
-            case "W":
-            case "S":
-                this.ySpeed = 0
-                break
-        }
-    }
-
-    public update(delta: number){
-        this.x += this.xSpeed * delta
-        this.y += this.ySpeed * delta
-    }
-
-    private shoot(){
+        private shoot(){
         this.game.addBlast(this.x + 80, this.y + 35)
     }
 
