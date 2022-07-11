@@ -1,0 +1,1 @@
+{"mappings":"AAAA;;;;;;;;AAQA","sources":["src/style.css"],"sourcesContent":["body {\r\n    margin: 0px;\r\n    padding: 0px;\r\n    width: 100vw;\r\n    height: 100vh;\r\n    overflow: hidden;\r\n}\r\n\r\ncanvas {\r\n    width: 100vw;\r\n    height: 100vh;\r\n}"],"names":[],"version":3,"file":"index.fcf714d7.css.map","sourceRoot":"/__parcel_source_root/"}
