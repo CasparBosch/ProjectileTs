@@ -1,15 +1,14 @@
 {
-  "dependencies": {
-    "pixi.js": "^6.4.2"
-  },
-  "devDependencies": {
-    "parcel": "^2.5.0",
-    "parcel-reporter-static-files-copy": "^1.3.4",
-    "querystring-es3": "^0.2.1",
-    "typescript": "^4.6.4"
-  },
-  "scripts": {
-    "start": "parcel index.html --dist-dir docs",
-    "build": "parcel build index.html --dist-dir docs --public-url ./"
-  }
+    "dependencies": {
+        "pixi.js": "^6.3.2"
+    },
+    "devDependencies": {
+        "parcel": "^2.5.0",
+        "querystring-es3": "^0.2.1",
+        "typescript": "^4.6.4"
+    },
+    "scripts": {
+        "start": "parcel src/index.html --dist-dir docs",
+        "build": "parcel build src/index.html --dist-dir docs --public-url ./"
+    }
 }

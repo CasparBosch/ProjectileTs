@@ -12,9 +12,9 @@ export class Game {
     loader: PIXI.Loader
     private scorpion: Scorpion
     private subZero: SubZero
-    private blast: Blast[] = []
+    private blasts: Blast[] = []
 
-    backgroundTextures: PIXI.Texture[] = []
+    // backgroundTextures: PIXI.Texture[] = []
 
     constructor() {
         // create a pixi canvas
@@ -34,9 +34,9 @@ export class Game {
     loadCompleted() {
         let background = new PIXI.Sprite(this.pixi.loader.resources["backgroundImage"].texture!)
         this.pixi.stage.addChild(background)
-        this.scorpion = new Scorpion(this.pixi.loader.resources["scorpionImage"].texture!)
+        this.scorpion = new Scorpion(this.pixi.loader.resources["scorpionImage"].texture!, this)
         this.pixi.stage.addChild(this.scorpion)
-        this.subZero = new SubZero(this.pixi.loader.resources["subZeroImage"].texture!)
+        this.subZero = new SubZero(this.pixi.loader.resources["subZeroImage"].texture!, this)
         this.pixi.stage.addChild(this.subZero)
 
         // for (let i = 0; i < 21; i++) {
@@ -63,44 +63,44 @@ export class Game {
         this.subZero.update(delta)
         this.scorpion.update(delta)
 
-        for (let blast of this.blast) {
+        for (let blast of this.blasts) {
             blast.update()
         }
 
         // check collisions
-        this.checkCollisions()
+        // this.checkCollisions()
     }
 
-    public addBlast(x: number, y: number) {
-        let b = new Blast(this.loader.resources["blast"].texture!, this, x, y)
-        this.blast.push(b)
+    public addBlast(x: number) {
+        let b = new Blast(this.loader.resources["blastImage"].texture!, this, x)
+        this.blasts.push(b)
         this.pixi.stage.addChild(b)
     }
 
     public removeBlast(blast: Blast) {
-        this.blast = this.blast.filter((b: Blast) => b != blast)
+        this.blasts = this.blasts.filter((b: Blast) => b != blast)
         blast.destroy()
     }
 
-    private checkCollisions() {
-        for (let blast of this.blast) {
-            if (this.collision(blast, this.subZero, this.scorpion)) {
-                this.removeBlast(blast)
-                console.log(-10)
-                break
-            }
-        }
-    }
+    // private checkCollisions() {
+    //     for (let blast of this.blast) {
+    //         if (this.collision(blast, this.subZero, this.scorpion)) {
+    //             this.removeBlast(blast)
+    //             console.log(-10)
+    //             break
+    //         }
+    //     }
+    // }
 
-    private collision(blast:Blast, subZero:SubZero, scorpion:Scorpion) {
-        const bounds1 = blast.getBounds()
-        const bounds2 = subZero.getBounds()
+    // private collision(blast:Blast, subZero:SubZero, scorpion:Scorpion) {
+    //     const bounds1 = blast.getBounds()
+    //     const bounds2 = subZero.getBounds()
 
-        return bounds1.x < bounds2.x + bounds2.width
-            && bounds1.x + bounds1.width > bounds2.x
-            && bounds1.y < bounds2.y + bounds2.height
-            && bounds1.y + bounds1.height > bounds2.y;
-    }
+    //     return bounds1.x < bounds2.x + bounds2.width
+    //         && bounds1.x + bounds1.width > bounds2.x
+    //         && bounds1.y < bounds2.y + bounds2.height
+    //         && bounds1.y + bounds1.height > bounds2.y;
+    // }
 
 }
 

@@ -519,8 +519,8 @@ var _scorpion = require("./scorpion");
 var _subzero = require("./subzero");
 var _blast = require("./blast");
 class Game {
-    blast = [];
-    backgroundTextures = [];
+    blasts = [];
+    // backgroundTextures: PIXI.Texture[] = []
     constructor(){
         // create a pixi canvas
         this.pixi = new _pixiJs.Application({
@@ -537,9 +537,9 @@ class Game {
     loadCompleted() {
         let background = new _pixiJs.Sprite(this.pixi.loader.resources["backgroundImage"].texture);
         this.pixi.stage.addChild(background);
-        this.scorpion = new (0, _scorpion.Scorpion)(this.pixi.loader.resources["scorpionImage"].texture);
+        this.scorpion = new (0, _scorpion.Scorpion)(this.pixi.loader.resources["scorpionImage"].texture, this);
         this.pixi.stage.addChild(this.scorpion);
-        this.subZero = new (0, _subzero.SubZero)(this.pixi.loader.resources["subZeroImage"].texture);
+        this.subZero = new (0, _subzero.SubZero)(this.pixi.loader.resources["subZeroImage"].texture, this);
         this.pixi.stage.addChild(this.subZero);
         // for (let i = 0; i < 21; i++) {
         //     const texture = PIXI.Texture.from(`spritesheet5 ${i + 1}.png`)
@@ -560,30 +560,18 @@ class Game {
     update(delta) {
         this.subZero.update(delta);
         this.scorpion.update(delta);
-        for (let blast of this.blast)blast.update();
-        // check collisions
-        this.checkCollisions();
+        for (let blast of this.blasts)blast.update();
+    // check collisions
+    // this.checkCollisions()
     }
-    addBlast(x, y) {
-        let b = new (0, _blast.Blast)(this.loader.resources["blast"].texture, this, x, y);
-        this.blast.push(b);
+    addBlast(x) {
+        let b = new (0, _blast.Blast)(this.loader.resources["blastImage"].texture, this, x);
+        this.blasts.push(b);
         this.pixi.stage.addChild(b);
     }
     removeBlast(blast) {
-        this.blast = this.blast.filter((b)=>b != blast);
+        this.blasts = this.blasts.filter((b)=>b != blast);
         blast.destroy();
-    }
-    checkCollisions() {
-        for (let blast of this.blast)if (this.collision(blast, this.subZero, this.scorpion)) {
-            this.removeBlast(blast);
-            console.log(-10);
-            break;
-        }
-    }
-    collision(blast, subZero, scorpion) {
-        const bounds1 = blast.getBounds();
-        const bounds2 = subZero.getBounds();
-        return bounds1.x < bounds2.x + bounds2.width && bounds1.x + bounds1.width > bounds2.x && bounds1.y < bounds2.y + bounds2.height && bounds1.y + bounds1.height > bounds2.y;
     }
 }
 new Game();
@@ -38591,11 +38579,12 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Scorpion", ()=>Scorpion);
 var _pixiJs = require("pixi.js");
 class Scorpion extends _pixiJs.Sprite {
-    xSpeed = 0;
-    ySpeed = 0;
+    xspeed = 0;
+    yspeed = 0;
     health = 100;
-    constructor(texture){
+    constructor(texture, game){
         super(texture);
+        this.game = game;
         this.x = 1300;
         this.y = 280;
         this.scale.set(-1, 1);
@@ -38605,8 +38594,26 @@ class Scorpion extends _pixiJs.Sprite {
         window.addEventListener("keydown", (e)=>this.onKeyDown(e));
         window.addEventListener("keyup", (e)=>this.onKeyUp(e));
     }
+    //keyboard input clickevent check voor WASD-keys
+    onKeyDown(e) {
+        switch(e.key.toUpperCase()){
+            case "L":
+                this.shoot();
+                break;
+        }
+    }
+    onKeyUp(e) {
+        switch(e.key.toUpperCase()){
+            case "L":
+                this.shoot();
+                break;
+        }
+    }
     shoot() {
-        this.game.addBlast(this.x + 80, this.y + 35);
+        this.game.addBlast(this.x + 80);
+    }
+    update(delta) {
+        this.x += this.xspeed * delta;
     }
 }
 
@@ -38616,11 +38623,12 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "SubZero", ()=>SubZero);
 var _pixiJs = require("pixi.js");
 class SubZero extends _pixiJs.Sprite {
-    xSpeed = 0;
-    ySpeed = 0;
+    xspeed = 0;
+    yspeed = 0;
     health = 100;
-    constructor(texture){
+    constructor(texture, game){
         super(texture);
+        this.game = game;
         this.x = 100;
         this.y = 280;
         this.width = 100;
@@ -38629,8 +38637,26 @@ class SubZero extends _pixiJs.Sprite {
         window.addEventListener("keydown", (e)=>this.onKeyDown(e));
         window.addEventListener("keyup", (e)=>this.onKeyUp(e));
     }
+    //keyboard input clickevent check voor WASD-keys
+    onKeyDown(e) {
+        switch(e.key.toUpperCase()){
+            case "F":
+                this.shoot();
+                break;
+        }
+    }
+    onKeyUp(e) {
+        switch(e.key.toUpperCase()){
+            case "F":
+                this.shoot();
+                break;
+        }
+    }
     shoot() {
-        this.game.addBlast(this.x + 80, this.y + 35);
+        this.game.addBlast(this.x + 80);
+    }
+    update(delta) {
+        this.x += this.xspeed * delta;
     }
 }
 
@@ -38644,13 +38670,15 @@ class Blast extends _pixiJs.Sprite {
         super(texture);
         this.game = game;
         this.pivot.x = 30;
-        this.pivot.y = 30;
         this.x = x - 50;
+        this.pivot.y = 30;
         this.y = y + 50;
     }
     update() {
         this.x += 3;
-        if (this.x > 1450) this.game.removeBlast(this);
+    // if (this.x > 1450) {
+    //     this.game.removeBlast(this)
+    // }
     }
 }
 
